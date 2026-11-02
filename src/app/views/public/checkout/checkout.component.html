@@ -1,0 +1,73 @@
+<div class="mx-auto max-w-7xl px-4 py-8">
+  <h1 class="text-3xl font-extrabold text-accent">Commande</h1>
+  <p class="mt-1 text-neutral-500">Indiquez où livrer votre commande, nous finaliserons ensemble sur WhatsApp.</p>
+
+  @if (!cart.items().length) {
+    <div class="py-16 text-center">
+      <p class="text-neutral-600">Votre panier est vide.</p>
+      <a routerLink="/boutique" class="mt-4 inline-block rounded-full bg-accent px-6 py-3 font-bold text-white hover:bg-accent-dark">
+        Découvrir la boutique
+      </a>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
+
+      <div>
+        <h2 class="text-lg font-extrabold">Livraison</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          @for (f of fields; track f.name) {
+            <label class="block text-sm font-semibold">
+              {{ f.label }}
+              <input [formControlName]="f.name" [type]="f.type"
+                     class="mt-1 w-full rounded-lg border bg-white px-3 py-3 font-normal outline-none focus:border-accent"
+                     [class.border-red-500]="form.get(f.name)?.invalid && form.get(f.name)?.touched"
+                     [class.border-pink-200]="!(form.get(f.name)?.invalid && form.get(f.name)?.touched)" />
+            </label>
+          }
+          <label class="block text-sm font-semibold sm:col-span-2">
+            Instructions de livraison
+            <textarea formControlName="instructions" rows="3"
+                      class="mt-1 w-full rounded-lg border border-pink-200 px-3 py-3 font-normal outline-none focus:border-accent"></textarea>
+          </label>
+        </div>
+
+        <p class="mt-6 text-sm text-neutral-600">
+          Vos données personnelles seront utilisées pour le traitement de votre commande,
+          vous accompagner au cours de votre visite du site web, et pour d'autres raisons
+          décrites dans notre <a routerLink="/confidentialite" class="underline">politique de confidentialité</a>.
+        </p>
+      </div>
+
+      <aside class="h-fit rounded-2xl bg-accent-soft p-6">
+        <h2 class="text-lg font-extrabold">Récapitulatif</h2>
+        <ul class="mt-4 space-y-2 text-sm">
+          @for (i of cart.items(); track i.product.id) {
+            <li class="flex justify-between gap-3">
+              <span>{{ i.quantity }} × {{ i.product.name }}</span>
+              <span class="font-bold">{{ (i.product.price * i.quantity).toLocaleString('fr-FR') }}</span>
+            </li>
+          }
+        </ul>
+        <div class="mt-3 flex justify-between text-sm">
+          <span>Livraison</span>
+          <span class="font-bold">{{ cart.shipping() ? cart.shipping().toLocaleString('fr-FR') + ' FCFA' : 'Offerte' }}</span>
+        </div>
+        <div class="mt-3 flex justify-between border-t border-pink-200 pt-3 font-extrabold">
+          <span>Total</span><span>{{ cart.total().toLocaleString('fr-FR') }} FCFA</span>
+        </div>
+
+        <button type="submit"
+                class="mt-6 w-full rounded-full bg-[#25D366] py-3 font-bold text-white hover:bg-[#1ebe5d]">
+          Commander via WhatsApp
+        </button>
+        <p class="mt-3 text-center text-xs text-neutral-500">
+          Vous serez redirigé vers WhatsApp pour confirmer votre commande et choisir le paiement.
+        </p>
+        @if (form.invalid && form.touched) {
+          <p class="mt-3 text-sm text-red-600">Veuillez remplir les champs obligatoires.</p>
+        }
+        <a routerLink="/panier" class="mt-3 block text-center text-sm text-neutral-500 hover:underline">Retour au panier</a>
+      </aside>
+    </form>
+  }
+</div>

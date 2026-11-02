@@ -1,0 +1,75 @@
+<div class="mx-auto max-w-7xl px-4 py-8">
+  <nav class="text-sm text-neutral-500">
+    <a routerLink="/" class="hover:underline">Accueil</a> / <span class="text-neutral-900">Boutique</span>
+  </nav>
+  <h1 class="mt-2 text-3xl font-extrabold text-neutral-900">Boutique</h1>
+  @if (q()) {
+    <p class="mt-1 text-neutral-500">Résultats pour « {{ q() }} »</p>
+  }
+
+  <div class="mt-8 grid gap-8 lg:grid-cols-[250px_1fr]">
+    <!-- Filtres -->
+    <aside class="space-y-6">
+      <div>
+        <h2 class="font-bold">Catégories</h2>
+        <ul class="mt-2 space-y-1 text-sm">
+          <li>
+            <a routerLink="/boutique" class="hover:underline" [class.font-bold]="!cat()" [class.underline]="!cat()">Toutes</a>
+          </li>
+          @for (c of ps.categories; track c.slug) {
+            <li>
+              <a routerLink="/boutique" [queryParams]="{ cat: c.slug }" class="hover:underline"
+                 [class.font-bold]="cat() === c.slug" [class.underline]="cat() === c.slug">
+                {{ c.name }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="font-bold">Prix maximum</h2>
+        <p class="text-sm text-neutral-500">{{ maxPrice().toLocaleString('fr-FR') }} FCFA</p>
+        <input #r type="range" min="10000" max="100000" step="5000" [value]="maxPrice()"
+               (input)="maxPrice.set(+r.value)" class="mt-2 w-full accent-neutral-900" />
+      </div>
+
+      <div class="space-y-2 text-sm">
+        <label class="flex items-center gap-2">
+          <input #s type="checkbox" [checked]="onlyStock()" (change)="onlyStock.set(s.checked)" class="h-4 w-4 accent-neutral-900" /> En stock
+        </label>
+        <label class="flex items-center gap-2">
+          <input #p type="checkbox" [checked]="onlyPromo()" (change)="onlyPromo.set(p.checked)" class="h-4 w-4 accent-neutral-900" /> Promotions
+        </label>
+        <label class="flex items-center gap-2">
+          <input #n type="checkbox" [checked]="onlyNew()" (change)="onlyNew.set(n.checked)" class="h-4 w-4 accent-neutral-900" /> Nouveautés
+        </label>
+      </div>
+    </aside>
+
+    <!-- Résultats -->
+    <section>
+      <div class="flex items-center justify-between gap-4">
+        <p class="text-sm text-neutral-500">{{ list().length }} produit(s)</p>
+        <select #so (change)="sort.set(so.value)"
+                class="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm">
+          <option value="rel">Pertinence</option>
+          <option value="asc">Prix croissant</option>
+          <option value="desc">Prix décroissant</option>
+          <option value="new">Nouveautés</option>
+          <option value="best">Meilleures ventes</option>
+        </select>
+      </div>
+
+      @if (list().length) {
+        <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+          @for (p of list(); track p.id) {
+            <app-product-card [product]="p" (addToCart)="add($event)" />
+          }
+        </div>
+      } @else {
+        <p class="mt-10 text-center text-neutral-500">Aucun produit ne correspond. Modifiez vos filtres.</p>
+      }
+    </section>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<article class="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition hover:shadow-lg">
+  <a [routerLink]="['/produit', product().id]"
+     class="relative flex aspect-square items-center justify-center bg-neutral-100 text-6xl">
+    @if (product().image) {
+      <img [src]="product().image" [alt]="product().name" class="h-full w-full object-cover" />
+    } @else {
+      <span>{{ product().emoji }}</span>
+    }
+    <div class="absolute left-3 top-3 flex gap-1.5 text-xs font-bold">
+      @if (product().isNew) {
+        <span class="rounded-full bg-accent px-2.5 py-1 text-neutral-900">Nouveau</span>
+      }
+      @if (discount() > 0) {
+        <span class="rounded-full bg-red-600 px-2.5 py-1 text-white">-{{ discount() }}%</span>
+      }
+    </div>
+  </a>
+
+  <button type="button" (click)="liked.set(!liked())" aria-label="Ajouter aux favoris"
+          class="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white text-lg shadow hover:scale-105">
+    {{ liked() ? '♥' : '♡' }}
+  </button>
+
+  <div class="flex flex-1 flex-col p-4">
+    <h3 class="font-bold text-neutral-900">
+      <a [routerLink]="['/produit', product().id]" class="hover:underline">{{ product().name }}</a>
+    </h3>
+    <p class="mt-1 text-sm text-neutral-500">{{ product().short }}</p>
+
+    <div class="mt-3 flex items-baseline gap-2">
+      <span class="text-lg font-extrabold text-neutral-900">{{ fcfa(product().price) }}</span>
+      @if (product().oldPrice) {
+        <span class="text-sm text-neutral-400 line-through">{{ fcfa(product().oldPrice!) }}</span>
+      }
+    </div>
+
+    <button type="button" (click)="addToCart.emit(product())"
+            class="mt-4 w-full rounded-full bg-neutral-900 py-2.5 text-sm font-bold text-white transition hover:bg-accent hover:text-neutral-900">
+      Ajouter au panier
+    </button>
+  </div>
+</article>

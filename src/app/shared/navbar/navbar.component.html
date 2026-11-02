@@ -1,0 +1,74 @@
+<header class="sticky top-0 z-50 border-b border-pink-100 bg-white">
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3 md:flex-nowrap md:gap-6">
+
+    <!-- Hamburger -->
+    <button type="button" (click)="menuOpen.set(!menuOpen())"
+            aria-label="Ouvrir le menu"
+            class="rounded-lg p-2 text-accent hover:bg-accent-soft">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <!-- Logo -->
+    <a routerLink="/" class="leading-none" (click)="menuOpen.set(false)">
+      <!-- <span class="block text-2xl font-extrabold tracking-tight text-accent">Adaastor</span> -->
+       <span class="block text-2xl font-extrabold tracking-tight">
+  <span class="text-neutral-900">Adaa</span><span class="text-accent">stor</span>
+</span>
+      <span class="mt-1 block text-[10px] font-medium uppercase tracking-[0.25em] text-neutral-500">
+        Électronique &amp; éclairage
+      </span>
+    </a>
+
+    <!-- Panier -->
+    <a routerLink="/panier"
+       class="relative order-2 ml-auto flex items-center gap-2 rounded-full border border-accent px-4 py-2 font-semibold text-accent hover:bg-accent-soft md:order-3 md:ml-0">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l1 13H5L6 7zM9 7a3 3 0 016 0" />
+      </svg>
+      <span class="hidden sm:inline">Panier</span>
+      @if (cartCount() > 0) {
+        <span class="absolute -right-1 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs font-bold text-white">
+          {{ cartCount() }}
+        </span>
+      }
+    </a>
+
+    <!-- Recherche -->
+    <form class="order-last flex w-full items-center rounded-full border border-pink-200 bg-accent-soft p-1 pl-4 md:order-2 md:flex-1"
+          (submit)="$event.preventDefault(); search(q.value)">
+      <svg class="h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" /><path stroke-linecap="round" d="M20 20l-3.5-3.5" />
+      </svg>
+      <input #q type="search" placeholder="Rechercher une lampe LED, un ring light..."
+             class="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-neutral-400" />
+      <button type="submit"
+              class="rounded-full bg-accent px-5 py-2 text-sm font-bold text-white transition hover:bg-accent-dark">
+        Chercher
+      </button>
+    </form>
+  </div>
+
+  <!-- Menu déroulant -->
+  @if (menuOpen()) {
+    <nav class="border-t border-pink-100 bg-white">
+      <ul class="mx-auto grid max-w-7xl gap-1 px-4 py-4 sm:grid-cols-2 lg:grid-cols-4">
+        @for (l of [
+          { label: 'Accueil', link: '/', promo: false },
+          { label: 'Boutique', link: '/boutique', promo: false },
+          { label: 'Promotions', link: '/boutique', promo: true },
+          { label: 'À propos', link: '/a-propos', promo: false },
+          { label: 'Contact', link: '/contact', promo: false }
+        ]; track l.label) {
+          <li>
+            <a [routerLink]="l.link" [queryParams]="l.promo ? { promo: 1 } : null" (click)="menuOpen.set(false)"
+               class="block rounded-lg px-3 py-3 font-medium text-neutral-800 hover:bg-accent-soft hover:text-accent">
+              {{ l.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  }
+</header>

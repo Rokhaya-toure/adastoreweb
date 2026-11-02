@@ -1,0 +1,145 @@
+<!-- HERO -->
+<section class="bg-neutral-900 text-white">
+  <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:grid-cols-2 md:py-20">
+
+    <!-- Texte -->
+    <div>
+      <span class="inline-block rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-neutral-900">
+        Nouvelle collection
+      </span>
+      <h1 class="mt-4 text-4xl font-extrabold leading-tight md:text-6xl">
+        L'équipement qu'il vous faut, <span class="text-accent">livré chez vous</span>
+      </h1>
+      <p class="mt-4 max-w-xl text-lg text-neutral-300">
+        Adaastor vous propose une sélection d'équipements de qualité pour le quotidien,
+        le travail et la création de contenu, au meilleur prix.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a routerLink="/boutique"
+           class="rounded-full bg-accent px-6 py-3 font-bold text-neutral-900 hover:brightness-95">
+          Voir la boutique
+        </a>
+        <a routerLink="/boutique" [queryParams]="{ cat: 'ring-lights' }"
+           class="rounded-full border border-white/30 px-6 py-3 font-bold text-white hover:border-accent">
+          Équipements créateurs
+        </a>
+      </div>
+    </div>
+
+    <!-- Grille produits -->
+    <div class="grid grid-cols-2 gap-3 rounded-3xl bg-[radial-gradient(circle_at_50%_40%,rgba(255,180,0,0.35),transparent_70%)] p-6">
+      @for (p of heroItems; track p.id) {
+        <a routerLink="/boutique" [queryParams]="{ cat: p.category }"
+           class="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-white/5 text-5xl md:text-6xl">
+          @if (p.image) {
+            <img [src]="p.image" [alt]="p.name" class="h-full w-full object-cover" />
+          } @else {
+            {{ p.emoji }}
+          }
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- PRÉSENTATION -->
+<section class="mx-auto max-w-4xl px-4 py-14 text-center">
+  <h2 class="text-2xl font-extrabold text-neutral-900 md:text-3xl">Bienvenue chez Adaastor</h2>
+  <p class="mt-4 text-neutral-600">
+    Adaastor est votre boutique en ligne d'équipements tech et accessoires. Nous sélectionnons
+    des produits fiables, à prix accessibles, pour les particuliers, les professionnels et les créateurs de contenu.
+    Commandez facilement et recevez vos articles rapidement.
+  </p>
+</section>
+
+<!-- CATÉGORIES -->
+<section class="mx-auto max-w-7xl px-4 py-14">
+  <h2 class="text-2xl font-extrabold text-neutral-900 md:text-3xl">Nos catégories</h2>
+  <p class="mt-1 text-neutral-500">Trouvez le bon équipement en quelques clics.</p>
+  <div class="mt-8 grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-3">
+    @for (c of categories; track c.slug) {
+      <a routerLink="/boutique" [queryParams]="{ cat: c.slug }"
+         class="rounded-2xl border border-neutral-200 p-5 transition hover:border-accent hover:shadow-md">
+        <span class="text-4xl">{{ c.emoji }}</span>
+        <h3 class="mt-3 font-bold text-neutral-900">{{ c.name }}</h3>
+        <p class="mt-1 text-sm text-neutral-500">{{ c.description }}</p>
+        <span class="mt-3 inline-block border-b-2 border-accent text-sm font-bold">Découvrir</span>
+      </a>
+    }
+  </div>
+</section>
+
+<!-- NOUVEAUTÉS -->
+<section class="mx-auto max-w-7xl px-4 py-14">
+  <h2 class="text-2xl font-extrabold text-neutral-900 md:text-3xl">Nouveautés</h2>
+  <p class="mt-1 text-neutral-500">Découvrez les derniers produits ajoutés à Adaastor.</p>
+  <div class="mt-8 grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+    @for (p of news; track p.id) {
+      <app-product-card [product]="p" (addToCart)="addToCart($event)" />
+    }
+  </div>
+</section>
+
+<!-- PROMOTIONS -->
+@if (promos.length) {
+  <section class="bg-accent">
+    <div class="mx-auto max-w-7xl px-4 py-14 text-center">
+      <h2 class="text-2xl font-extrabold text-neutral-900 md:text-3xl">Les bonnes affaires Adaastor</h2>
+      <p class="mt-2 text-xl font-bold text-neutral-900">Jusqu'à -{{ maxDiscount }}% sur une sélection de produits</p>
+      <a routerLink="/boutique" class="mt-6 inline-block rounded-full bg-neutral-900 px-6 py-3 font-bold text-white hover:bg-neutral-800">
+        Profiter des offres
+      </a>
+    </div>
+  </section>
+  <section class="mx-auto max-w-7xl px-4 py-14">
+    <div class="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+      @for (p of promos; track p.id) {
+        <app-product-card [product]="p" (addToCart)="addToCart($event)" />
+      }
+    </div>
+  </section>
+}
+
+<!-- POPULAIRES -->
+<section class="mx-auto max-w-7xl px-4 pb-14">
+  <h2 class="text-2xl font-extrabold text-neutral-900 md:text-3xl">Nos produits populaires</h2>
+  <p class="mt-1 text-neutral-500">Les équipements les plus choisis par nos clients.</p>
+  <div class="mt-8 grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+    @for (p of popular; track p.id) {
+      <app-product-card [product]="p" (addToCart)="addToCart($event)" />
+    }
+  </div>
+</section>
+
+<!-- CRÉATEURS -->
+
+
+<section class="bg-neutral-100">
+  <div class="mx-auto max-w-3xl px-4 py-16 text-center">
+    <h2 class="text-2xl font-extrabold text-neutral-900 md:text-3xl">Tout pour créer votre contenu</h2>
+    <p class="mt-3 text-neutral-600">
+      Améliorez la qualité de vos vidéos, photos et lives avec nos équipements pour créateurs.
+    </p>
+    <div class="mt-6 flex flex-wrap justify-center gap-3">
+      @for (t of creatorLinks; track t.cat) {
+        <a routerLink="/boutique" [queryParams]="{ cat: t.cat }"
+           class="rounded-full border border-neutral-200 bg-white px-5 py-3 font-bold hover:border-accent">
+          {{ t.label }}
+        </a>
+      }
+    </div>
+    <a routerLink="/boutique" [queryParams]="{ cat: 'ring-lights' }"
+       class="mt-8 inline-block rounded-full bg-accent px-6 py-3 font-bold text-neutral-900 hover:brightness-95">
+      Découvrir les équipements
+    </a>
+  </div>
+</section>
+<!-- RÉASSURANCE -->
+<section class="mx-auto grid max-w-7xl gap-6 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
+  @for (r of reassurance; track r.title) {
+    <div>
+      <h3 class="font-bold text-neutral-900">{{ r.title }}</h3>
+      <p class="mt-1 text-sm text-neutral-500">{{ r.text }}</p>
+    </div>
+  }
+</section>

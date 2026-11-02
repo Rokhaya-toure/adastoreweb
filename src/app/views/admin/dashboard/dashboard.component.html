@@ -1,0 +1,150 @@
+<header>
+  <h1 class="text-2xl font-extrabold tracking-tight">Tableau de bord</h1>
+  <p class="text-sm capitalize text-slate-500">{{ today }}</p>
+</header>
+
+<div class="mt-6 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+
+  <!-- Paiements à vérifier : l'action la plus urgente -->
+  <section class="rounded-2xl bg-slate-900 p-5 text-white">
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="text-lg font-bold">Paiements à vérifier</h2>
+      <span class="rounded-full bg-amber-400 px-2.5 py-0.5 text-sm font-bold text-slate-900">
+        {{ data.paymentsToVerify().length }}
+      </span>
+    </div>
+    <p class="mt-1 text-sm text-slate-400">
+      Comparez le montant et la référence avec votre application Wave ou Orange Money avant de confirmer.
+    </p>
+
+    <ul class="mt-3 divide-y divide-white/10">
+      @for (o of shown(); track o.id) {
+        <li class="py-4">
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <p class="font-semibold">{{ o.customer }} <span class="font-normal text-slate-400">{{ o.ref }}</span></p>
+              <p class="text-sm text-slate-400">
+                {{ methods[o.method] }}@if (o.paymentRef) {, réf. <span class="font-mono text-slate-200">{{ o.paymentRef }}</span>}, {{ waiting(o) }}
+              </p>
+            </div>
+            <p class="text-xl font-extrabold text-amber-400">{{ fcfa(o.total) }}</p>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button type="button" (click)="verify(o)"
+                    class="rounded-full bg-amber-400 px-4 py-1.5 text-sm font-bold text-slate-900 hover:bg-amber-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              Paiement reçu
+            </button>
+            <button type="button" (click)="data.markPaymentFailed(o.id)"
+                    class="rounded-full border border-white/20 px-4 py-1.5 text-sm font-semibold hover:bg-white/10">
+              Non reçu
+            </button>
+            <a [href]="whatsapp(o)" target="_blank" rel="noopener"
+               class="rounded-full border border-white/20 px-4 py-1.5 text-sm font-semibold hover:bg-white/10">
+              Écrire sur WhatsApp
+            </a>
+          </div>
+        </li>
+      } @empty {
+        <li class="py-8 text-center text-slate-400">Aucun paiement en attente. Tout est vérifié.</li>
+      }
+    </ul>
+
+    @if (data.paymentsToVerify().length > shown().length) {
+      <a routerLink="/admin/paiements" class="mt-2 inline-block text-sm font-semibold text-amber-400 hover:underline">
+        Voir les {{ data.paymentsToVerify().length }} paiements
+      </a>
+    }
+  </section>
+
+  <!-- Indicateurs -->
+  <section class="grid content-start gap-4 sm:grid-cols-2">
+    @for (k of kpis(); track k.label) {
+      <div class="rounded-2xl bg-white p-5">
+        <p class="text-sm text-slate-500">{{ k.label }}</p>
+        <p class="mt-1 text-2xl font-extrabold tracking-tight" [class.text-red-600]="k.alert">{{ k.value }}</p>
+        <p class="mt-1 text-xs text-slate-500">{{ k.hint }}</p>
+      </div>
+    }
+  </section>
+</div>
+
+<div class="mt-6 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+
+  <section class="rounded-2xl bg-white p-5">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h2 class="text-lg font-bold">Ventes des 7 derniers jours</h2>
+      <p class="text-sm text-slate-500">Total : <span class="font-bold text-slate-900">{{ fcfa(weekTotal()) }}</span></p>
+    </div>
+    <svg viewBox="0 0 560 190" class="mt-4 w-full" role="img" aria-label="Montant des ventes par jour sur la semaine">
+      <line x1="0" y1="160" x2="560" y2="160" class="stroke-slate-200" />
+      @for (b of chart(); track $index) {
+        <rect [attr.x]="b.x" [attr.y]="b.y" width="48" [attr.height]="b.h" rx="6"
+              [class]="b.today ? 'fill-amber-400' : 'fill-slate-300'" />
+        <text [attr.x]="b.x + 24" [attr.y]="b.y - 6" text-anchor="middle" class="fill-slate-600 text-[13px] font-semibold">{{ b.text }}</text>
+        <text [attr.x]="b.x + 24" y="182" text-anchor="middle" class="fill-slate-500 text-[13px]">{{ b.label }}</text>
+      }
+    </svg>
+  </section>
+
+  <section class="rounded-2xl bg-white p-5">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-bold">Stock à surveiller</h2>
+      <a routerLink="/admin/stocks" class="text-sm font-semibold text-slate-600 hover:underline">Gérer</a>
+    </div>
+    <ul class="mt-3 divide-y text-sm">
+      @for (p of lowStock(); track p.id) {
+        <li class="flex items-center justify-between gap-3 py-3">
+          <div>
+            <p class="font-semibold">{{ p.name }}</p>
+            <p class="text-xs text-slate-500">{{ p.category }}</p>
+          </div>
+          <span class="rounded-full px-2.5 py-0.5 text-xs font-bold"
+                [class]="p.stock === 0 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'">
+            {{ p.stock === 0 ? 'Rupture' : p.stock + ' restant' + (p.stock > 1 ? 's' : '') }}
+          </span>
+        </li>
+      } @empty {
+        <li class="py-6 text-center text-slate-500">Tous les produits sont bien approvisionnés.</li>
+      }
+    </ul>
+  </section>
+</div>
+
+<section class="mt-6 rounded-2xl bg-white p-5">
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-bold">Dernières commandes</h2>
+    <a routerLink="/admin/commandes" class="text-sm font-semibold text-slate-600 hover:underline">Toutes les commandes</a>
+  </div>
+  <div class="mt-3 overflow-x-auto">
+    <table class="w-full min-w-[640px] text-left text-sm">
+      <thead class="border-b text-xs text-slate-500">
+        <tr>
+          <th class="py-2 pr-3 font-semibold">Commande</th>
+          <th class="py-2 pr-3 font-semibold">Date</th>
+          <th class="py-2 pr-3 font-semibold">Paiement</th>
+          <th class="py-2 pr-3 font-semibold">Statut</th>
+          <th class="py-2 text-right font-semibold">Total</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y">
+        @for (o of recent(); track o.id) {
+          <tr>
+            <td class="py-3 pr-3">
+              <p class="font-semibold">{{ o.customer }}</p>
+              <p class="text-xs text-slate-500">{{ o.ref }}, {{ o.source === 'whatsapp' ? 'WhatsApp' : 'Site' }}</p>
+            </td>
+            <td class="py-3 pr-3 text-slate-600">{{ o.createdAt | date: 'dd/MM HH:mm' }}</td>
+            <td class="py-3 pr-3">
+              <span class="mr-1.5">{{ methods[o.method] }}</span>
+              <span class="rounded-full px-2 py-0.5 text-xs font-semibold" [class]="payStyles[o.paymentStatus]">{{ payLabels[o.paymentStatus] }}</span>
+            </td>
+            <td class="py-3 pr-3">
+              <span class="rounded-full px-2 py-0.5 text-xs font-semibold" [class]="statusStyles[o.status]">{{ statusLabels[o.status] }}</span>
+            </td>
+            <td class="py-3 text-right font-bold">{{ fcfa(o.total) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

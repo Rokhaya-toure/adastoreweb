@@ -1,0 +1,50 @@
+<div class="mx-auto max-w-7xl px-4 py-8">
+  <h1 class="text-3xl font-extrabold text-neutral-900">Panier</h1>
+
+  @if (!cart.items().length) {
+    <div class="py-16 text-center">
+      <p class="text-neutral-600">Votre panier est vide.</p>
+      <a routerLink="/boutique" class="mt-4 inline-block rounded-full bg-accent px-6 py-3 font-bold">Découvrir la boutique</a>
+    </div>
+  } @else {
+    <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
+      <ul class="divide-y divide-neutral-200 border-y border-neutral-200">
+        @for (i of cart.items(); track i.product.id) {
+          <li class="flex flex-wrap items-center gap-4 py-4">
+            <a [routerLink]="['/produit', i.product.id]"
+               class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-neutral-100 text-3xl">
+              @if (i.product.image) { <img [src]="i.product.image" [alt]="i.product.name" class="h-full w-full rounded-xl object-cover" /> }
+              @else { {{ i.product.emoji }} }
+            </a>
+            <div class="min-w-40 flex-1">
+              <p class="font-bold">{{ i.product.name }}</p>
+              <p class="text-sm text-neutral-500">{{ i.product.price.toLocaleString('fr-FR') }} FCFA</p>
+            </div>
+            <div class="flex items-center rounded-full border border-neutral-200">
+              <button type="button" (click)="cart.setQuantity(i.product.id, i.quantity - 1)" aria-label="Diminuer" class="h-10 w-10 text-lg">−</button>
+              <span class="w-8 text-center font-bold">{{ i.quantity }}</span>
+              <button type="button" (click)="cart.setQuantity(i.product.id, i.quantity + 1)" aria-label="Augmenter" class="h-10 w-10 text-lg">+</button>
+            </div>
+            <p class="w-32 text-right font-bold">{{ (i.product.price * i.quantity).toLocaleString('fr-FR') }} FCFA</p>
+            <button type="button" (click)="cart.remove(i.product.id)" aria-label="Supprimer"
+                    class="h-10 w-10 rounded-full border border-neutral-200 text-neutral-500 hover:bg-neutral-100">✕</button>
+          </li>
+        }
+      </ul>
+
+      <aside class="h-fit rounded-2xl bg-neutral-100 p-6">
+        <h2 class="text-lg font-extrabold">Résumé</h2>
+        <dl class="mt-4 space-y-3 text-sm">
+          <div class="flex justify-between"><dt>Sous-total</dt><dd class="font-bold">{{ cart.subtotal().toLocaleString('fr-FR') }} FCFA</dd></div>
+          <div class="flex justify-between"><dt>Livraison</dt>
+            <dd class="font-bold">{{ cart.shipping() ? cart.shipping().toLocaleString('fr-FR') + ' FCFA' : 'Offerte' }}</dd></div>
+          <div class="flex justify-between border-t border-neutral-300 pt-3 text-base">
+            <dt class="font-bold">Total</dt><dd class="font-extrabold">{{ cart.total().toLocaleString('fr-FR') }} FCFA</dd></div>
+        </dl>
+        <a routerLink="/commande" class="mt-6 block rounded-full bg-neutral-900 py-3 text-center font-bold text-white hover:bg-neutral-800">
+          Passer la commande
+        </a>
+      </aside>
+    </div>
+  }
+</div>

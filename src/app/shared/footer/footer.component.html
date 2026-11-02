@@ -1,0 +1,70 @@
+<footer class="bg-neutral-900 text-neutral-200">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-[2fr_1fr_1fr]">
+
+    <!-- Marque -->
+    <div>
+      <p class="text-2xl font-extrabold tracking-tight text-white">
+        <span class="text-accent">A</span>daastor
+      </p>
+      <p class="mt-1 text-[10px] uppercase tracking-[0.25em] text-neutral-400">Électronique &amp; éclairage</p>
+
+      <p class="mt-6 max-w-md text-lg leading-relaxed">
+        Lampes LED, ring lights, projecteurs, microphones et accessoires électroniques,
+        livrés chez vous au Sénégal.
+      </p>
+
+      <ul class="mt-6 space-y-3">
+        <li class="flex items-center gap-3">
+          <svg class="h-5 w-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 118 0v3"/></svg>
+          Paiement sécurisé (Wave, Orange Money &amp; carte bancaire)
+        </li>
+        <li class="flex items-center gap-3">
+          <svg class="h-5 w-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linejoin="round" d="M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4m0 10V11m9-4l-9 4"/></svg>
+          Livraison soignée
+        </li>
+        <li class="flex items-center gap-3">
+          <svg class="h-5 w-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 14v-2a8 8 0 0116 0v2M4 14h3v5H4zM17 14h3v5h-3zM20 19a4 4 0 01-4 2h-2"/></svg>
+          Assistance client 7 jours / 7
+        </li>
+      </ul>
+    </div>
+
+    <!-- Boutique -->
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-widest text-neutral-400">Boutique</h3>
+      <ul class="mt-5 space-y-3 text-lg">
+        <li><a routerLink="/boutique" class="hover:text-accent">Tous les produits</a></li>
+        <li><a routerLink="/boutique" [queryParams]="{ cat: 'eclairage' }" class="hover:text-accent">Éclairage</a></li>
+        <li><a routerLink="/boutique" [queryParams]="{ cat: 'projecteurs' }" class="hover:text-accent">Projecteurs</a></li>
+        <li><a routerLink="/boutique" [queryParams]="{ cat: 'audio' }" class="hover:text-accent">Audio</a></li>
+        <li><a routerLink="/boutique" [queryParams]="{ cat: 'creation' }" class="hover:text-accent">Création de contenu</a></li>
+        <li><a routerLink="/boutique" [queryParams]="{ cat: 'accessoires' }" class="hover:text-accent">Accessoires</a></li>
+      </ul>
+    </div>
+
+    <!-- Aide -->
+    <div>
+      <h3 class="text-sm font-bold uppercase tracking-widest text-neutral-400">Aide</h3>
+      <ul class="mt-5 space-y-3 text-lg">
+        <li><a routerLink="/suivi" class="hover:text-accent">Suivre ma commande</a></li>
+        <li><a routerLink="/livraison" class="hover:text-accent">Livraison et retours</a></li>
+        <li><a routerLink="/contact" class="hover:text-accent">Contact</a></li>
+        <li><a href="https://wa.me/221000000000" target="_blank" rel="noopener" class="hover:text-accent">WhatsApp</a></li>
+        <li class="text-sm text-neutral-400">contact&#64;adaastor.com</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bas de page -->
+  <div class="mx-auto max-w-7xl border-t border-neutral-700 px-4 py-6">
+    <div class="flex flex-col items-center justify-between gap-4 text-sm text-neutral-400 sm:flex-row">
+      <p>© {{ year }} Adaastor. Tous droits réservés.</p>
+      <div class="flex gap-2 text-xs font-bold text-neutral-300">
+        <span class="rounded border border-neutral-600 px-2 py-1">Wave</span>
+        <span class="rounded border border-neutral-600 px-2 py-1">Orange Money</span>
+        <span class="rounded border border-neutral-600 px-2 py-1">VISA</span>
+        <span class="rounded border border-neutral-600 px-2 py-1">Mastercard</span>
+      </div>
+    </div>
+  </div>
+</footer>
